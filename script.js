@@ -3,7 +3,7 @@
 // Tố Hữu - Nhà Thơ Cách Mạng
 // ===================================
 
-// Page Loader - MỚI MƯỢT MÀ HƠN
+// Page Loader
 window.addEventListener('load', function() {
     const loader = document.querySelector('.page-loader');
     if (loader) {
@@ -76,202 +76,131 @@ function createScrollTopButton() {
 createScrollTopButton();
 
 // ===================================
-// BOOK SLIDER - SWIPE & KÉO NGANG
+// 3D CAROUSEL FOR BOOKS
 // ===================================
 
-let currentSlideIndex = 0;
-let startX = 0;
-let isDragging = false;
-let currentTranslate = 0;
-let prevTranslate = 0;
+let currentIndex = 0;
+let isAnimating = false;
 
-function initBookSlider() {
-    const slider = document.querySelector('.book-slider');
-    if (!slider) return;
+function init3DCarousel() {
+    const carousel = document.getElementById('carousel3d');
+    if (!carousel) return;
 
-    const slides = document.querySelectorAll('.book-slide');
-    if (slides.length === 0) return;
+    const items = carousel.querySelectorAll('.carousel-item');
+    const bookDetails = document.querySelectorAll('.book-detail');
+    const prevBtn = document.getElementById('prevBtn3D');
+    const nextBtn = document.getElementById('nextBtn3D');
 
-    // Tạo container cho slides
-    const container = document.createElement('div');
-    container.className = 'book-slider-container';
-    
-    // Di chuyển tất cả slides vào container
-    slides.forEach(slide => {
-        container.appendChild(slide);
-    });
-    
-    slider.appendChild(container);
+    if (items.length === 0) return;
 
-    // Tạo navigation buttons
-    const navDiv = document.createElement('div');
-    navDiv.className = 'slider-nav';
-    navDiv.innerHTML = `
-        <button class="nav-btn" id="prevBtn">← Trước</button>
-        <button class="nav-btn" id="nextBtn">Tiếp →</button>
-    `;
-    slider.appendChild(navDiv);
+    // Set initial active state
+    items[0].classList.add('active');
+    if (bookDetails[0]) bookDetails[0].classList.add('active');
 
-    // Tạo dots
-    const dotsDiv = document.createElement('div');
-    dotsDiv.className = 'slider-dots';
-    slides.forEach((_, index) => {
-        const dot = document.createElement('div');
-        dot.className = 'dot' + (index === 0 ? ' active' : '');
-        dot.addEventListener('click', () => goToSlide(index));
-        dotsDiv.appendChild(dot);
-    });
-    slider.appendChild(dotsDiv);
+    function updateCarousel(direction) {
+        if (isAnimating) return;
+        isAnimating = true;
 
-    function updateSlider() {
-        const slideWidth = slides[0].offsetWidth;
-        currentTranslate = -currentSlideIndex * slideWidth;
-        container.style.transform = `translateX(${currentTranslate}px)`;
-        
-        // Update active slide
-        slides.forEach((slide, index) => {
-            slide.classList.toggle('active', index === currentSlideIndex);
-        });
-        
-        // Update dots
-        document.querySelectorAll('.dot').forEach((dot, index) => {
-            dot.classList.toggle('active', index === currentSlideIndex);
-        });
-        
-        // Update button states
-        document.getElementById('prevBtn').disabled = currentSlideIndex === 0;
-        document.getElementById('nextBtn').disabled = currentSlideIndex === slides.length - 1;
-    }
+        // Remove active from all
+        items.forEach(item => item.classList.remove('active'));
+        bookDetails.forEach(detail => detail.classList.remove('active'));
 
-    function nextSlide() {
-        if (currentSlideIndex < slides.length - 1) {
-            currentSlideIndex++;
-            updateSlider();
+        // Update positions with animation
+        if (direction === 'next') {
+            currentIndex = (currentIndex + 1) % items.length;
+            carousel.classList.add('rotate-right');
+            
+            setTimeout(() => {
+                // Rearrange items
+                const firstItem = items[0];
+                carousel.appendChild(firstItem);
+                carousel.classList.remove('rotate-right');
+                
+                // Set new active
+                items[0].classList.add('active');
+                if (bookDetails[currentIndex]) {
+                    bookDetails[currentIndex].classList.add('active');
+                }
+                
+                isAnimating = false;
+            }, 800);
+            
+        } else if (direction === 'prev') {
+            currentIndex = (currentIndex - 1 + items.length) % items.length;
+            carousel.classList.add('rotate-left');
+            
+            setTimeout(() => {
+                // Rearrange items
+                const lastItem = items[items.length - 1];
+                carousel.insertBefore(lastItem, items[0]);
+                carousel.classList.remove('rotate-left');
+                
+                // Set new active
+                items[0].classList.add('active');
+                if (bookDetails[currentIndex]) {
+                    bookDetails[currentIndex].classList.add('active');
+                }
+                
+                isAnimating = false;
+            }, 800);
         }
-    }
-
-    function prevSlide() {
-        if (currentSlideIndex > 0) {
-            currentSlideIndex--;
-            updateSlider();
-        }
-    }
-
-    function goToSlide(index) {
-        currentSlideIndex = index;
-        updateSlider();
     }
 
     // Button events
-    document.getElementById('nextBtn').addEventListener('click', nextSlide);
-    document.getElementById('prevBtn').addEventListener('click', prevSlide);
-
-    // Touch/Swipe support
-    container.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].clientX;
-        isDragging = true;
-        container.style.transition = 'none';
-    });
-
-    container.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
-        const currentX = e.touches[0].clientX;
-        const diff = currentX - startX;
-        const slideWidth = slides[0].offsetWidth;
-        currentTranslate = -currentSlideIndex * slideWidth + diff;
-        container.style.transform = `translateX(${currentTranslate}px)`;
-    });
-
-    container.addEventListener('touchend', (e) => {
-        if (!isDragging) return;
-        isDragging = false;
-        container.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-        
-        const movedBy = currentTranslate - prevTranslate;
-        const slideWidth = slides[0].offsetWidth;
-        
-        if (Math.abs(movedBy) > slideWidth / 4) {
-            if (movedBy < 0 && currentSlideIndex < slides.length - 1) {
-                currentSlideIndex++;
-            } else if (movedBy > 0 && currentSlideIndex > 0) {
-                currentSlideIndex--;
-            }
-        }
-        
-        updateSlider();
-        prevTranslate = currentTranslate;
-    });
-
-    // Mouse drag support for desktop
-    container.addEventListener('mousedown', (e) => {
-        startX = e.clientX;
-        isDragging = true;
-        container.style.cursor = 'grabbing';
-        container.style.transition = 'none';
-        e.preventDefault();
-    });
-
-    document.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
-        const currentX = e.clientX;
-        const diff = currentX - startX;
-        const slideWidth = slides[0].offsetWidth;
-        currentTranslate = -currentSlideIndex * slideWidth + diff;
-        container.style.transform = `translateX(${currentTranslate}px)`;
-    });
-
-    document.addEventListener('mouseup', (e) => {
-        if (!isDragging) return;
-        isDragging = false;
-        container.style.cursor = 'grab';
-        container.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-        
-        const movedBy = currentTranslate - prevTranslate;
-        const slideWidth = slides[0].offsetWidth;
-        
-        if (Math.abs(movedBy) > slideWidth / 4) {
-            if (movedBy < 0 && currentSlideIndex < slides.length - 1) {
-                currentSlideIndex++;
-            } else if (movedBy > 0 && currentSlideIndex > 0) {
-                currentSlideIndex--;
-            }
-        }
-        
-        updateSlider();
-        prevTranslate = currentTranslate;
-    });
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => updateCarousel('next'));
+    }
+    
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => updateCarousel('prev'));
+    }
 
     // Keyboard navigation
     document.addEventListener('keydown', function(e) {
         if (e.key === 'ArrowRight') {
-            nextSlide();
+            updateCarousel('next');
         } else if (e.key === 'ArrowLeft') {
-            prevSlide();
+            updateCarousel('prev');
         }
     });
 
-    // Initial setup
-    updateSlider();
-    
-    // Update on window resize
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => {
-            updateSlider();
-        }, 250);
+    // Touch support for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    carousel.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
     });
 
-    // Make functions global for old button compatibility
-    window.nextSlide = nextSlide;
-    window.prevSlide = prevSlide;
+    carousel.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    });
+
+    function handleSwipe() {
+        const swipeThreshold = 50;
+        const diff = touchStartX - touchEndX;
+        
+        if (Math.abs(diff) > swipeThreshold) {
+            if (diff > 0) {
+                updateCarousel('next');
+            } else {
+                updateCarousel('prev');
+            }
+        }
+    }
+
+    // Auto rotate (optional - comment out if not needed)
+    // setInterval(() => {
+    //     updateCarousel('next');
+    // }, 5000);
 }
 
-// Initialize slider when DOM is ready
+// Initialize 3D Carousel when DOM is ready
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initBookSlider);
+    document.addEventListener('DOMContentLoaded', init3DCarousel);
 } else {
-    initBookSlider();
+    init3DCarousel();
 }
 
 // ===================================
@@ -293,7 +222,7 @@ const observer = new IntersectionObserver(function(entries) {
 }, observerOptions);
 
 document.addEventListener('DOMContentLoaded', function() {
-    const animatedElements = document.querySelectorAll('.card-value, .book-info');
+    const animatedElements = document.querySelectorAll('.card-value');
     animatedElements.forEach(el => {
         el.style.opacity = '0';
         el.style.transform = 'translateY(20px)';
@@ -301,13 +230,6 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(el);
     });
 });
-
-// ===================================
-// SỬA LỖI: BỎ PARALLAX CHO ẢNH
-// ===================================
-
-// BỎ parallax effect vì gây lỗi ảnh bị bay lên
-// Chỉ giữ hover effect trong CSS
 
 // ===================================
 // SMOOTH REVEAL FOR TIMELINE ITEMS
@@ -404,8 +326,79 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 // ===================================
+// PARALLAX EFFECT FOR IMAGES (SUBTLE)
+// ===================================
+
+function addParallaxEffect() {
+    const images = document.querySelectorAll('.img-box img');
+    
+    window.addEventListener('scroll', () => {
+        images.forEach(img => {
+            const rect = img.getBoundingClientRect();
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * 0.05;
+            
+            if (rect.top < window.innerHeight && rect.bottom > 0) {
+                img.style.transform = `translateY(${rate}px) scale(1.05)`;
+            }
+        });
+    });
+}
+
+// Only add parallax on desktop
+if (window.innerWidth > 768) {
+    addParallaxEffect();
+}
+
+// ===================================
+// BOOK COVER HOVER 3D EFFECT
+// ===================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    const bookCovers = document.querySelectorAll('.book-cover');
+    
+    bookCovers.forEach(cover => {
+        cover.addEventListener('mousemove', function(e) {
+            const rect = this.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = (y - centerY) / 10;
+            const rotateY = (centerX - x) / 10;
+            
+            this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+        
+        cover.addEventListener('mouseleave', function() {
+            this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+        });
+    });
+});
+
+// ===================================
+// LOADING ANIMATION FOR IMAGES
+// ===================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    const images = document.querySelectorAll('img');
+    
+    images.forEach(img => {
+        img.addEventListener('load', function() {
+            this.style.opacity = '0';
+            this.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => {
+                this.style.opacity = '1';
+            }, 100);
+        });
+    });
+});
+
+// ===================================
 // LOG
 // ===================================
 
-console.log('%c🎨 Website Tố Hữu - Phiên bản cải tiến', 'color: #d4af37; font-size: 16px; font-weight: bold;');
-console.log('%c✨ Đã sửa lỗi parallax, thêm swipe, cải thiện UX', 'color: #8b0000; font-size: 12px;');
+console.log('%c🎨 Website Tố Hữu - Phiên bản nâng cấp 3D', 'color: #d4af37; font-size: 16px; font-weight: bold;');
+console.log('%c✨ 3D Carousel, Smooth Animations, Enhanced UX', 'color: #8b0000; font-size: 12px;');
