@@ -3,13 +3,16 @@
 // Tố Hữu - Nhà Thơ Cách Mạng
 // ===================================
 
-// Page Loader
+// Page Loader - MỚI MƯỢT MÀ HƠN
 window.addEventListener('load', function() {
     const loader = document.querySelector('.page-loader');
     if (loader) {
         setTimeout(() => {
-            loader.classList.add('hidden');
-        }, 800);
+            loader.classList.add('fade-out');
+            setTimeout(() => {
+                loader.style.display = 'none';
+            }, 600);
+        }, 1200);
     }
 });
 
@@ -17,14 +20,12 @@ window.addEventListener('load', function() {
 // NAVIGATION EFFECTS
 // ===================================
 
-// Sticky Navigation with Scroll Effect
 let lastScroll = 0;
 const nav = document.querySelector('nav');
 
 window.addEventListener('scroll', function() {
     const currentScroll = window.pageYOffset;
     
-    // Add scrolled class for styling
     if (currentScroll > 50) {
         nav.classList.add('scrolled');
     } else {
@@ -49,7 +50,6 @@ navLinks.forEach(link => {
 // SCROLL TO TOP BUTTON
 // ===================================
 
-// Create and append scroll to top button
 function createScrollTopButton() {
     const scrollBtn = document.createElement('div');
     scrollBtn.className = 'scroll-top';
@@ -57,7 +57,6 @@ function createScrollTopButton() {
     scrollBtn.setAttribute('title', 'Về đầu trang');
     document.body.appendChild(scrollBtn);
     
-    // Show/hide based on scroll position
     window.addEventListener('scroll', function() {
         if (window.pageYOffset > 300) {
             scrollBtn.classList.add('visible');
@@ -66,7 +65,6 @@ function createScrollTopButton() {
         }
     });
     
-    // Scroll to top on click
     scrollBtn.addEventListener('click', function() {
         window.scrollTo({
             top: 0,
@@ -75,46 +73,211 @@ function createScrollTopButton() {
     });
 }
 
-// Initialize scroll button
 createScrollTopButton();
 
 // ===================================
-// BOOK SLIDER FUNCTIONALITY
+// BOOK SLIDER - SWIPE & KÉO NGANG
 // ===================================
 
 let currentSlideIndex = 0;
-const slides = document.querySelectorAll('.book-slide');
+let startX = 0;
+let isDragging = false;
+let currentTranslate = 0;
+let prevTranslate = 0;
 
-function showSlide(index) {
-    slides.forEach((slide, i) => {
-        slide.classList.remove('active');
-        if (i === index) {
-            slide.classList.add('active');
+function initBookSlider() {
+    const slider = document.querySelector('.book-slider');
+    if (!slider) return;
+
+    const slides = document.querySelectorAll('.book-slide');
+    if (slides.length === 0) return;
+
+    // Tạo container cho slides
+    const container = document.createElement('div');
+    container.className = 'book-slider-container';
+    
+    // Di chuyển tất cả slides vào container
+    slides.forEach(slide => {
+        container.appendChild(slide);
+    });
+    
+    slider.appendChild(container);
+
+    // Tạo navigation buttons
+    const navDiv = document.createElement('div');
+    navDiv.className = 'slider-nav';
+    navDiv.innerHTML = `
+        <button class="nav-btn" id="prevBtn">← Trước</button>
+        <button class="nav-btn" id="nextBtn">Tiếp →</button>
+    `;
+    slider.appendChild(navDiv);
+
+    // Tạo dots
+    const dotsDiv = document.createElement('div');
+    dotsDiv.className = 'slider-dots';
+    slides.forEach((_, index) => {
+        const dot = document.createElement('div');
+        dot.className = 'dot' + (index === 0 ? ' active' : '');
+        dot.addEventListener('click', () => goToSlide(index));
+        dotsDiv.appendChild(dot);
+    });
+    slider.appendChild(dotsDiv);
+
+    function updateSlider() {
+        const slideWidth = slides[0].offsetWidth;
+        currentTranslate = -currentSlideIndex * slideWidth;
+        container.style.transform = `translateX(${currentTranslate}px)`;
+        
+        // Update active slide
+        slides.forEach((slide, index) => {
+            slide.classList.toggle('active', index === currentSlideIndex);
+        });
+        
+        // Update dots
+        document.querySelectorAll('.dot').forEach((dot, index) => {
+            dot.classList.toggle('active', index === currentSlideIndex);
+        });
+        
+        // Update button states
+        document.getElementById('prevBtn').disabled = currentSlideIndex === 0;
+        document.getElementById('nextBtn').disabled = currentSlideIndex === slides.length - 1;
+    }
+
+    function nextSlide() {
+        if (currentSlideIndex < slides.length - 1) {
+            currentSlideIndex++;
+            updateSlider();
+        }
+    }
+
+    function prevSlide() {
+        if (currentSlideIndex > 0) {
+            currentSlideIndex--;
+            updateSlider();
+        }
+    }
+
+    function goToSlide(index) {
+        currentSlideIndex = index;
+        updateSlider();
+    }
+
+    // Button events
+    document.getElementById('nextBtn').addEventListener('click', nextSlide);
+    document.getElementById('prevBtn').addEventListener('click', prevSlide);
+
+    // Touch/Swipe support
+    container.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        isDragging = true;
+        container.style.transition = 'none';
+    });
+
+    container.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        const currentX = e.touches[0].clientX;
+        const diff = currentX - startX;
+        const slideWidth = slides[0].offsetWidth;
+        currentTranslate = -currentSlideIndex * slideWidth + diff;
+        container.style.transform = `translateX(${currentTranslate}px)`;
+    });
+
+    container.addEventListener('touchend', (e) => {
+        if (!isDragging) return;
+        isDragging = false;
+        container.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+        
+        const movedBy = currentTranslate - prevTranslate;
+        const slideWidth = slides[0].offsetWidth;
+        
+        if (Math.abs(movedBy) > slideWidth / 4) {
+            if (movedBy < 0 && currentSlideIndex < slides.length - 1) {
+                currentSlideIndex++;
+            } else if (movedBy > 0 && currentSlideIndex > 0) {
+                currentSlideIndex--;
+            }
+        }
+        
+        updateSlider();
+        prevTranslate = currentTranslate;
+    });
+
+    // Mouse drag support for desktop
+    container.addEventListener('mousedown', (e) => {
+        startX = e.clientX;
+        isDragging = true;
+        container.style.cursor = 'grabbing';
+        container.style.transition = 'none';
+        e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const currentX = e.clientX;
+        const diff = currentX - startX;
+        const slideWidth = slides[0].offsetWidth;
+        currentTranslate = -currentSlideIndex * slideWidth + diff;
+        container.style.transform = `translateX(${currentTranslate}px)`;
+    });
+
+    document.addEventListener('mouseup', (e) => {
+        if (!isDragging) return;
+        isDragging = false;
+        container.style.cursor = 'grab';
+        container.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+        
+        const movedBy = currentTranslate - prevTranslate;
+        const slideWidth = slides[0].offsetWidth;
+        
+        if (Math.abs(movedBy) > slideWidth / 4) {
+            if (movedBy < 0 && currentSlideIndex < slides.length - 1) {
+                currentSlideIndex++;
+            } else if (movedBy > 0 && currentSlideIndex > 0) {
+                currentSlideIndex--;
+            }
+        }
+        
+        updateSlider();
+        prevTranslate = currentTranslate;
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowRight') {
+            nextSlide();
+        } else if (e.key === 'ArrowLeft') {
+            prevSlide();
         }
     });
+
+    // Initial setup
+    updateSlider();
+    
+    // Update on window resize
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            updateSlider();
+        }, 250);
+    });
+
+    // Make functions global for old button compatibility
+    window.nextSlide = nextSlide;
+    window.prevSlide = prevSlide;
 }
 
-function nextSlide() {
-    currentSlideIndex = (currentSlideIndex + 1) % slides.length;
-    showSlide(currentSlideIndex);
-}
-
-function prevSlide() {
-    currentSlideIndex = (currentSlideIndex - 1 + slides.length) % slides.length;
-    showSlide(currentSlideIndex);
-}
-
-// Auto-advance slides (optional)
-if (slides.length > 0) {
-    // Uncomment to enable auto-play
-    // setInterval(nextSlide, 5000);
+// Initialize slider when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBookSlider);
+} else {
+    initBookSlider();
 }
 
 // ===================================
 // INTERSECTION OBSERVER FOR ANIMATIONS
 // ===================================
 
-// Animate elements on scroll into view
 const observerOptions = {
     threshold: 0.1,
     rootMargin: '0px 0px -50px 0px'
@@ -129,9 +292,8 @@ const observer = new IntersectionObserver(function(entries) {
     });
 }, observerOptions);
 
-// Observe all cards and timeline items
 document.addEventListener('DOMContentLoaded', function() {
-    const animatedElements = document.querySelectorAll('.card-value, .book-info, .img-box');
+    const animatedElements = document.querySelectorAll('.card-value, .book-info');
     animatedElements.forEach(el => {
         el.style.opacity = '0';
         el.style.transform = 'translateY(20px)';
@@ -141,46 +303,11 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ===================================
-// IMAGE LAZY LOADING
+// SỬA LỖI: BỎ PARALLAX CHO ẢNH
 // ===================================
 
-function lazyLoadImages() {
-    const images = document.querySelectorAll('img[data-src]');
-    
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src;
-                img.removeAttribute('data-src');
-                imageObserver.unobserve(img);
-            }
-        });
-    });
-    
-    images.forEach(img => imageObserver.observe(img));
-}
-
-lazyLoadImages();
-
-// ===================================
-// PARALLAX EFFECT FOR IMAGES
-// ===================================
-
-window.addEventListener('scroll', function() {
-    const scrolled = window.pageYOffset;
-    const parallaxElements = document.querySelectorAll('.img-box img');
-    
-    parallaxElements.forEach(el => {
-        const speed = 0.3;
-        const rect = el.getBoundingClientRect();
-        
-        if (rect.top < window.innerHeight && rect.bottom > 0) {
-            const yPos = -(scrolled * speed);
-            el.style.transform = `translateY(${yPos}px) scale(1.1)`;
-        }
-    });
-});
+// BỎ parallax effect vì gây lỗi ảnh bị bay lên
+// Chỉ giữ hover effect trong CSS
 
 // ===================================
 // SMOOTH REVEAL FOR TIMELINE ITEMS
@@ -202,47 +329,11 @@ function revealTimeline() {
     }, { threshold: 0.3 });
     
     timelineItems.forEach(item => {
-        item.style.opacity = '0';
-        item.style.transform = 'translateX(-30px)';
-        item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
         timelineObserver.observe(item);
     });
 }
 
 revealTimeline();
-
-// ===================================
-// FLIP CARD INTERACTIONS
-// ===================================
-
-document.querySelectorAll('.flip-card').forEach(card => {
-    // Touch support for mobile
-    card.addEventListener('touchstart', function() {
-        this.classList.toggle('flipped');
-    });
-    
-    // Add click for better mobile experience
-    card.addEventListener('click', function(e) {
-        if (window.innerWidth <= 768) {
-            e.preventDefault();
-            this.classList.toggle('flipped');
-        }
-    });
-});
-
-// ===================================
-// KEYBOARD NAVIGATION FOR BOOK SLIDER
-// ===================================
-
-document.addEventListener('keydown', function(e) {
-    if (slides.length > 0) {
-        if (e.key === 'ArrowRight') {
-            nextSlide();
-        } else if (e.key === 'ArrowLeft') {
-            prevSlide();
-        }
-    }
-});
 
 // ===================================
 // HOVER EFFECTS FOR CARDS
@@ -267,40 +358,6 @@ if (footer) {
     const currentYear = new Date().getFullYear();
     footer.innerHTML = footer.innerHTML.replace('2024', currentYear);
 }
-
-// ===================================
-// PERFORMANCE: Debounce Scroll Events
-// ===================================
-
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-
-// Apply debounce to scroll-heavy functions
-const debouncedParallax = debounce(() => {
-    const scrolled = window.pageYOffset;
-    const parallaxElements = document.querySelectorAll('.img-box img');
-    
-    parallaxElements.forEach(el => {
-        const speed = 0.2;
-        const rect = el.getBoundingClientRect();
-        
-        if (rect.top < window.innerHeight && rect.bottom > 0) {
-            const yPos = -(scrolled * speed);
-            el.style.transform = `translateY(${yPos}px) scale(1.05)`;
-        }
-    });
-}, 10);
-
-window.addEventListener('scroll', debouncedParallax);
 
 // ===================================
 // ADD READING PROGRESS BAR
@@ -330,7 +387,7 @@ function createProgressBar() {
 createProgressBar();
 
 // ===================================
-// ENHANCED NAVIGATION: Smooth Section Scrolling
+// ENHANCED NAVIGATION
 // ===================================
 
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -347,39 +404,8 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 // ===================================
-// EASTER EGG: Konami Code
+// LOG
 // ===================================
 
-let konamiCode = [];
-const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-
-document.addEventListener('keydown', function(e) {
-    konamiCode.push(e.key);
-    konamiCode = konamiCode.slice(-10);
-    
-    if (konamiCode.join(',') === konamiSequence.join(',')) {
-        // Easter egg activated!
-        document.body.style.animation = 'rainbow 2s ease-in-out';
-        setTimeout(() => {
-            alert('🎉 Bạn đã tìm ra bí mật! Tố Hữu sẽ tự hào về bạn! 🎉');
-            document.body.style.animation = '';
-        }, 500);
-    }
-});
-
-// Add rainbow animation
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes rainbow {
-        0% { filter: hue-rotate(0deg); }
-        100% { filter: hue-rotate(360deg); }
-    }
-`;
-document.head.appendChild(style);
-
-// ===================================
-// LOG: Script Loaded Successfully
-// ===================================
-
-console.log('%c🎨 Website Tố Hữu được tải thành công!', 'color: #d4af37; font-size: 16px; font-weight: bold;');
-console.log('%c✨ Với tình yêu và kính trọng đến nhà thơ vĩ đại', 'color: #8b0000; font-size: 12px;');
+console.log('%c🎨 Website Tố Hữu - Phiên bản cải tiến', 'color: #d4af37; font-size: 16px; font-weight: bold;');
+console.log('%c✨ Đã sửa lỗi parallax, thêm swipe, cải thiện UX', 'color: #8b0000; font-size: 12px;');
