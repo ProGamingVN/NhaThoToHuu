@@ -6,20 +6,15 @@
     <title>Nhà Thơ Tố Hữu - Ngọn Cờ Thơ Ca Cách Mạng</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        /* CSS Reset and Global Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* 🎨 GLOBAL STYLES & VARIABLES */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --primary-color: #6a11cb; /* Màu tím đậm */
-            --secondary-color: #2575fc; /* Màu xanh sáng */
+            --primary-color: #6a11cb; /* Màu Tím đậm */
+            --secondary-color: #2575fc; /* Màu Xanh sáng */
             --text-dark: #333333;
             --text-light: #ffffff;
-            --background-light: #f4f7f6;
-            --accent-color: #ff9900; /* Màu cam nổi bật */
+            --background-body: #e6e9f0; /* Nền xám nhạt */
+            --accent-color: #ff9900; /* Màu Cam nổi bật */
             --transition-speed: 0.4s;
         }
 
@@ -27,25 +22,22 @@
             font-family: 'Roboto', sans-serif;
             line-height: 1.7;
             color: var(--text-dark);
-            background: var(--background-light);
-            transition: background var(--transition-speed);
+            background: var(--background-body);
+            scroll-behavior: smooth;
         }
 
-        /* Utility classes */
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 20px 0; /* Padding trên dưới */
         }
 
-        /* Header - Hero Section */
+        /* 🖼️ HEADER */
         header {
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             color: var(--text-light);
             padding: 100px 20px 60px;
             text-align: center;
-            position: relative;
-            overflow: hidden;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             animation: headerFadeIn 1.5s ease-out;
         }
@@ -55,7 +47,6 @@
             font-size: 3.5em;
             margin-bottom: 10px;
             text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
-            position: relative;
             animation: textRise 1s ease-out;
         }
 
@@ -66,7 +57,7 @@
             animation: textRise 1s ease-out 0.3s both;
         }
 
-        /* Navigation */
+        /* 🧭 NAVIGATION */
         nav {
             background: rgba(255, 255, 255, 0.95);
             padding: 12px 0;
@@ -76,7 +67,7 @@
             box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(5px);
         }
-
+        
         nav ul {
             list-style: none;
             display: flex;
@@ -106,274 +97,23 @@
             border-color: transparent;
         }
 
-        /* Section Styling */
-        section {
-            background: var(--text-light);
-            margin: 40px 0;
-            padding: 60px 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-            position: relative;
-            overflow: hidden;
-            border-left: 5px solid var(--secondary-color);
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
-        }
-
-        section.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        section h2 {
-            font-family: 'Playfair Display', serif;
-            color: var(--primary-color);
-            font-size: 2.5em;
-            margin-bottom: 30px;
-            position: relative;
-        }
-
-        section h2::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 0;
-            width: 80px;
-            height: 4px;
-            background: var(--accent-color);
-            border-radius: 2px;
-        }
-
-        section h3 {
-            color: var(--secondary-color);
-            font-size: 1.8em;
-            margin: 30px 0 15px;
-            border-left: 5px solid var(--accent-color);
-            padding-left: 15px;
-            font-family: 'Playfair Display', serif;
-        }
-
-        p {
-            margin-bottom: 15px;
-        }
-
-        /* Image Placeholder */
-        .image-placeholder {
+        /* 🖥️ IFRAME - CONTENT CONTAINER */
+        #content-frame {
+            border: none;
             width: 100%;
-            min-height: 350px;
-            background: linear-gradient(45deg, #e6e9f0 0%, #aab8c2 100%);
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 30px 0;
-            border: 3px dashed var(--primary-color);
-            position: relative;
-            overflow: hidden;
-            transition: all var(--transition-speed);
-            cursor: pointer;
-        }
-
-        .image-placeholder:hover {
-            transform: scale(1.01);
-            box-shadow: 0 15px 30px rgba(106, 17, 203, 0.2);
-            border-color: var(--secondary-color);
-        }
-
-        .image-placeholder::before {
-            content: '🖼️';
-            font-size: 5em;
-            opacity: 0.2;
-            position: absolute;
-        }
-
-        .image-placeholder span {
-            position: absolute;
-            bottom: 15px;
-            color: var(--primary-color);
-            font-style: italic;
-            font-size: 1.1em;
-            background: rgba(255, 255, 255, 0.8);
-            padding: 5px 10px;
-            border-radius: 5px;
-            transition: opacity var(--transition-speed);
-        }
-        
-        /* Quote Box */
-        .quote-box {
-            background: linear-gradient(135deg, #fceabb 0%, #f8b500 100%);
-            padding: 40px;
-            border-radius: 15px;
-            margin: 40px 0;
-            font-size: 1.4em;
-            font-style: italic;
-            text-align: center;
-            position: relative;
-            color: var(--text-dark);
-            box-shadow: 0 8px 25px rgba(255, 153, 0, 0.3);
-            border-left: 8px solid var(--primary-color);
-            transition: transform var(--transition-speed);
-        }
-
-        .quote-box:hover {
-            transform: translateY(-5px);
-        }
-
-        .quote-box::before {
-            content: '“';
-            font-family: serif;
-            font-size: 8em;
-            position: absolute;
-            top: -10px;
-            left: 20px;
-            color: rgba(255, 255, 255, 0.5);
-            z-index: 1;
-        }
-        
-        .quote-content {
-            position: relative;
-            z-index: 2;
-        }
-
-        /* Timeline */
-        .timeline {
-            position: relative;
-            padding: 20px 0;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 17px;
-            width: 3px;
-            height: 100%;
-            background: var(--secondary-color);
-        }
-
-        .timeline-item {
-            padding: 20px 0 20px 60px;
-            position: relative;
-            margin-bottom: 20px;
-            opacity: 0;
-            transform: translateX(-30px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
-        }
-
-        .timeline-item.visible {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        .timeline-item::before {
-            content: '⭐';
-            position: absolute;
-            left: 0;
-            top: 25px;
-            font-size: 1.5em;
-            animation: pulse 2s infinite alternate;
-        }
-
-        .timeline-year {
-            font-weight: bold;
-            color: var(--primary-color);
-            font-size: 1.3em;
-            margin-bottom: 5px;
-        }
-
-        /* Works Grid */
-        .works-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin: 30px 0;
-        }
-
-        .work-card {
-            background: var(--background-light);
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-            transition: all var(--transition-speed);
-            border-top: 5px solid var(--accent-color);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .work-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-            border-color: var(--primary-color);
-        }
-
-        .work-card h4 {
-            color: var(--secondary-color);
-            margin-bottom: 10px;
-            font-size: 1.6em;
-            font-family: 'Playfair Display', serif;
-        }
-
-        .work-card .period {
-            color: var(--primary-color);
-            font-weight: 700;
-            margin-bottom: 10px;
+            min-height: 80vh; /* Chiều cao tối thiểu 80% viewport */
             display: block;
-            font-size: 1.1em;
+            background-color: transparent;
+            transition: opacity 0.5s ease;
         }
 
-        .work-card p {
-            font-size: 0.95em;
-        }
-
-        /* Values List (Features/Contributions) */
-        .values-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
-        }
-
-        .value-item {
-            background: var(--text-light);
-            padding: 25px;
-            border-radius: 12px;
-            border-left: 6px solid var(--primary-color);
-            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
-            transition: all var(--transition-speed);
-        }
-
-        .value-item:hover {
-            transform: scale(1.03);
-            box-shadow: 0 10px 20px rgba(106, 17, 203, 0.2);
-        }
-
-        .value-item h5 {
-            color: var(--secondary-color);
-            margin-bottom: 10px;
-            font-size: 1.3em;
-            display: flex;
-            align-items: center;
-        }
-
-        .value-item h5::before {
-            content: attr(data-icon);
-            font-size: 1.2em;
-            margin-right: 10px;
-            color: var(--accent-color);
-        }
-        
-        .value-item p {
-            font-size: 0.95em;
-        }
-
-        /* Footer */
+        /* FOOTER */
         footer {
             background: var(--text-dark);
-            color: var(--background-light);
+            color: var(--background-body);
             text-align: center;
             padding: 40px 20px;
-            margin-top: 60px;
+            margin-top: 20px;
             border-top: 5px solid var(--accent-color);
         }
 
@@ -381,51 +121,15 @@
             margin: 5px 0;
             font-size: 0.9em;
         }
-
-        /* Scroll Top Button */
-        .scroll-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: var(--accent-color);
-            color: var(--text-light);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            opacity: 0;
-            transition: all var(--transition-speed);
-            box-shadow: 0 5px 20px rgba(255, 153, 0, 0.4);
-            z-index: 1000;
-            font-size: 1.5em;
-        }
-
-        .scroll-top.visible {
-            opacity: 1;
-            transform: scale(1.1);
-        }
-
-        .scroll-top:hover {
-            transform: translateY(-5px) scale(1.1);
-            box-shadow: 0 10px 30px rgba(255, 153, 0, 0.6);
+        
+        /* 📱 RESPONSIVE */
+        @media (max-width: 768px) {
+            header h1 { font-size: 2.5em; }
+            header p { font-size: 1.1em; }
+            nav a { padding: 8px 12px; font-size: 0.85em; }
         }
         
-        /* Text Highlighting */
-        strong {
-            color: var(--primary-color);
-            font-weight: 700;
-        }
-
-        em {
-            color: var(--secondary-color);
-            font-style: normal;
-            font-weight: 500;
-        }
-
-        /* Animations */
+        /* 💫 ANIMATIONS */
         @keyframes headerFadeIn {
             from { opacity: 0; transform: translateY(-50px); }
             to { opacity: 1; transform: translateY(0); }
@@ -434,52 +138,6 @@
         @keyframes textRise {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 2.5em;
-            }
-
-            header p {
-                font-size: 1.1em;
-            }
-
-            section {
-                padding: 40px 20px;
-            }
-
-            section h2 {
-                font-size: 2em;
-            }
-
-            nav ul {
-                gap: 5px;
-            }
-
-            nav a {
-                padding: 8px 12px;
-                font-size: 0.85em;
-            }
-            
-            .image-placeholder {
-                min-height: 200px;
-            }
-            
-            .quote-box {
-                font-size: 1.1em;
-                padding: 30px 20px;
-            }
-            
-            .values-list {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
@@ -492,199 +150,15 @@
 
     <nav>
         <ul>
-            <li><a href="#gioi-thieu">Giới Thiệu</a></li>
-            <li><a href="#cuoc-doi">Cuộc Đời</a></li>
-            <li><a href="#tac-pham">Tác Phẩm</a></li>
-            <li><a href="#tu-tuong">Tư Tưởng</a></li>
-            <li><a href="#anh-huong">Ảnh Hưởng</a></li>
+            <li><a href="gioithieu.html" data-page="gioithieu.html">Giới Thiệu</a></li>
+            <li><a href="cuocdoi.html" data-page="cuocdoi.html">Cuộc Đời</a></li>
+            <li><a href="tacpham.html" data-page="tacpham.html">Tác Phẩm & Sự Nghiệp</a></li>
+            <li><a href="anhhuong.html" data-page="anhhuong.html">Tư Tưởng & Ảnh Hưởng</a></li>
         </ul>
     </nav>
 
     <div class="container">
-        <section id="gioi-thieu" data-animate-delay="0.1">
-            <h2>Giới Thiệu Chung</h2>
-            
-            <div class="image-placeholder">
-                <img src="placeholder-tohuu-portrait.jpg" alt="Ảnh chân dung Nhà thơ Tố Hữu">
-                <span>Ảnh chân dung Nhà thơ Tố Hữu</span>
-            </div>
-
-            <p><strong>Tố Hữu</strong> (1920 - 2002) là một trong những nhà thơ lớn nhất của nền văn học Việt Nam hiện đại. Ông được mệnh danh là <em>"Ngọn cờ đầu của thơ ca cách mạng"</em>.</p>
-            
-            <h3 style="margin-top: 30px;">Vai Trò & Vị Trí</h3>
-            <p><strong>Thời đại:</strong> Ông sáng tác xuyên suốt thời kỳ đấu tranh giành độc lập, thống nhất đất nước và xây dựng chủ nghĩa xã hội, gắn liền thơ ca với tiến trình lịch sử dân tộc.</p>
-            <p><strong>Vai trò:</strong> Không chỉ là một thi sĩ vĩ đại, ông còn là một nhà lãnh đạo tư tưởng, văn hóa cấp cao của Đảng và Nhà nước ta, góp phần định hình đường lối văn hóa - văn nghệ cách mạng.</p>
-
-            <div class="quote-box">
-                <div class="quote-content">
-                    "Thơ là tiếng nói của tâm hồn dân tộc, là ngọn lửa của niềm tin và khát vọng tự do."
-                </div>
-            </div>
-        </section>
-
-        <section id="cuoc-doi" data-animate-delay="0.3">
-            <h2>Cuộc Đời & Dấu Mốc Lịch Sử</h2>
-
-            <div class="image-placeholder">
-                <img src="placeholder-tohuu-young.jpg" alt="Ảnh Tố Hữu thời trẻ">
-                <span>Ảnh Tố Hữu thời trẻ và hoạt động cách mạng</span>
-            </div>
-
-            <h3>Hoàn Cảnh Sống</h3>
-            <p>Sinh ra trong một gia đình nhà nho nghèo tại Thừa Thiên Huế, Tố Hữu sớm được tiếp xúc với phong trào yêu nước và tư tưởng tiến bộ. Hoàn cảnh sống đã thôi thúc ông dấn thân vào con đường cách mạng ngay từ khi còn rất trẻ.</p>
-
-            <h3>Các Mốc Quan Trọng (Timeline)</h3>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-year">1937</div>
-                    <p>Tham gia tích cực vào phong trào học sinh – sinh viên yêu nước, bắt đầu sáng tác những bài thơ đầu tiên.</p>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-year">1939</div>
-                    <p><strong>Kết nạp vào Đảng Cộng sản Đông Dương</strong> khi mới 19 tuổi. Đây là bước ngoặt quyết định cuộc đời và sự nghiệp thơ ca của ông (bài thơ <em>"Từ ấy"</em>).</p>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-year">1940-1945</div>
-                    <p>Bị thực dân Pháp bắt giam nhiều lần, trải qua nhiều nhà tù. Trong tù, ông vẫn tiếp tục làm thơ, giữ vững tinh thần đấu tranh.</p>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-year">1945</div>
-                    <p>Tham gia lãnh đạo khởi nghĩa ở Huế, đóng góp lớn vào thắng lợi của Cách mạng tháng Tám tại miền Trung.</p>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-year">Sau 1945</div>
-                    <p>Giữ nhiều trọng trách quan trọng trong Đảng và Nhà nước, đặc biệt trên mặt trận văn hóa – tư tưởng trong suốt hai cuộc kháng chiến.</p>
-                </div>
-            </div>
-            
-            <div class="image-placeholder">
-                <img src="placeholder-tohuu-later.jpg" alt="Ảnh Tố Hữu với Chủ tịch Hồ Chí Minh">
-                <span>Ảnh Tố Hữu trong các giai đoạn lịch sử và hoạt động chính trị</span>
-            </div>
-        </section>
-
-        <section id="tac-pham" data-animate-delay="0.5">
-            <h2>Sự Nghiệp Thơ Ca</h2>
-
-            <p style="font-size: 1.1em; margin-bottom: 30px;">Sự nghiệp thơ ca của Tố Hữu là một bản hùng ca bất tận, phản ánh chân thực những chặng đường lịch sử hào hùng của dân tộc.</p>
-
-            <div class="image-placeholder">
-                <img src="placeholder-tohuu-works.jpg" alt="Ảnh các tác phẩm của Tố Hữu">
-                <span>Bộ tuyển tập thơ Tố Hữu qua các thời kỳ</span>
-            </div>
-
-            <h3>Các Tập Thơ Tiêu Biểu</h3>
-            
-            <div class="works-grid">
-                <div class="work-card">
-                    <h4>Từ Ấy</h4>
-                    <div class="period">(1937–1946)</div>
-                    <p>Khẳng định niềm vui và sự giác ngộ <em>lý tưởng cộng sản</em>, thể hiện cái tôi hòa mình vào cái ta chung của dân tộc.</p>
-                </div>
-
-                <div class="work-card">
-                    <h4>Việt Bắc</h4>
-                    <div class="period">(1947–1954)</div>
-                    <p>Tái hiện không khí <em>kháng chiến chống Pháp</em> gian khổ mà anh dũng, sâu nặng tình quân dân, tình đồng bào.</p>
-                </div>
-
-                <div class="work-card">
-                    <h4>Gió Lộng</h4>
-                    <div class="period">(1955–1961)</div>
-                    <p>Phản ánh niềm hân hoan <em>xây dựng chủ nghĩa xã hội</em> ở miền Bắc và khao khát thống nhất đất nước.</p>
-                </div>
-
-                <div class="work-card">
-                    <h4>Ra Trận</h4>
-                    <div class="period">(1962–1971)</div>
-                    <p>Tiếng nói động viên tinh thần cả nước <em>chống Mỹ cứu nước</em>, ca ngợi chủ nghĩa anh hùng cách mạng.</p>
-                </div>
-                
-                <div class="work-card">
-                    <h4>Máu và Hoa</h4>
-                    <div class="period">(1972–1977)</div>
-                    <p>Ca ngợi chiến thắng vĩ đại, sự hy sinh và niềm vui <em>đất nước thống nhất</em>, thể hiện cảm xúc mãnh liệt.</p>
-                </div>
-                
-                <div class="work-card">
-                    <h4>Một Tiếng Đờn</h4>
-                    <div class="period">(1978–1992)</div>
-                    <p>Thể hiện những suy ngẫm sâu sắc của thi sĩ về cuộc đời, về chiến tranh và hòa bình sau nhiều năm cống hiến.</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="tu-tuong" data-animate-delay="0.7">
-            <h2>Tư Tưởng & Phong Cách Thơ</h2>
-            
-            <div class="image-placeholder">
-                <img src="placeholder-tohuu-style.jpg" alt="Ảnh Tố Hữu sáng tác thơ">
-                <span>Tố Hữu - người chiến sĩ trên mặt trận văn hóa</span>
-            </div>
-
-            <h3>Đặc Điểm Tư Tưởng Xuyên Suốt</h3>
-            
-            <div class="values-list">
-                <div class="value-item">
-                    <h5 data-icon="🚩">Lý Tưởng Cách Mạng & Yêu Nước</h5>
-                    <p>Tư tưởng cốt lõi: đấu tranh cho độc lập dân tộc, tự do và hạnh phúc của nhân dân, thể hiện lòng trung thành tuyệt đối với Đảng.</p>
-                </div>
-
-                <div class="value-item">
-                    <h5 data-icon="❤️">Tinh Thần Dâng Hiến & Hòa Nhập</h5>
-                    <p>Khát vọng mãnh liệt về sự dâng hiến, hòa mình vào quần chúng, tự nguyện <strong>"gắn bó chân thành"</strong> với nhân dân và Tổ quốc.</p>
-                </div>
-
-                <div class="value-item">
-                    <h5 data-icon="🕊️">Tính Hướng Thiện & Lãng Mạn Cách Mạng</h5>
-                    <p>Thể hiện niềm tin mãnh liệt vào tương lai tươi sáng, sự chiến thắng của cái thiện, kết hợp chất <em>trữ tình sâu sắc</em> với chất <em>chính trị hùng tráng</em>.</p>
-                </div>
-                
-                <div class="value-item">
-                    <h5 data-icon="🏛️">Ảnh Hưởng Tư Tưởng Hồ Chí Minh</h5>
-                    <p>Tư tưởng, đạo đức, phong cách của Chủ tịch Hồ Chí Minh có ảnh hưởng lớn, trở thành nguồn cảm hứng xuyên suốt và được thể hiện rõ nét trong thơ ông.</p>
-                </div>
-            </div>
-            
-            <h3>Đặc Sắc Nghệ Thuật</h3>
-            <p>Phong cách thơ Tố Hữu đặc trưng bởi giọng điệu **trữ tình - chính trị** sâu sắc, ngôn ngữ giàu tính dân tộc, sử dụng thể thơ lục bát và các biện pháp tu từ truyền thống một cách điêu luyện. Thơ ông vừa là lời tâm tình cá nhân, vừa là tiếng nói chung của cả dân tộc.</p>
-        </section>
-        
-        <section id="anh-huong" data-animate-delay="0.9">
-            <h2>Ảnh Hưởng & Ý Nghĩa Với Dân Tộc</h2>
-
-            <div class="image-placeholder">
-                <img src="placeholder-tohuu-legacy.jpg" alt="Ảnh Tố Hữu với các thế hệ độc giả">
-                <span>Di sản thơ ca Tố Hữu với thế hệ hôm nay</span>
-            </div>
-
-            <h3>Giá Trị Vĩnh Cửu</h3>
-            
-            <div class="values-list">
-                <div class="value-item">
-                    <h5 data-icon="🎤">Tiếng Nói Cổ Vũ Cách Mạng</h5>
-                    <p>Thơ ông là nguồn động viên tinh thần to lớn, cổ vũ lòng yêu nước, tinh thần hy sinh của toàn dân trong các cuộc kháng chiến.</p>
-                </div>
-
-                <div class="value-item">
-                    <h5 data-icon="🏆">Cây Đại Thụ Thơ Ca</h5>
-                    <p>Được coi là <strong>"cây đại thụ"</strong>, người đặt nền móng và định hình nền thơ ca cách mạng Việt Nam, là chuẩn mực cho dòng thơ trữ tình - chính trị.</p>
-                </div>
-
-                <div class="value-item">
-                    <h5 data-icon="⭐">Biểu Tượng Anh Hùng</h5>
-                    <p>Xây dựng thành công hình tượng **Anh bộ đội Cụ Hồ** và người dân cách mạng, làm sáng ngời chủ nghĩa anh hùng dân tộc.</p>
-                </div>
-            </div>
-            
-            <h3>Thông Điệp Cho Thế Hệ Trẻ</h3>
-            <p>Đối với thế hệ trẻ ngày nay, thơ Tố Hữu không chỉ là tài liệu lịch sử mà còn là **bài học đạo đức** về sự dấn thân, về trách nhiệm với cộng đồng, và về tình yêu Tổ quốc không bao giờ phai nhạt. Dù thời đại thay đổi, thông điệp về <em>lý tưởng, lòng biết ơn và tinh thần trách nhiệm</em> vẫn còn nguyên giá trị.</p>
-        </section>
-        
-    </div>
-
-    <div class="scroll-top" onclick="scrollToTop()">
-        ↑
+        <iframe id="content-frame" src="gioithieu.html" frameborder="0"></iframe>
     </div>
 
     <footer>
@@ -693,90 +167,53 @@
     </footer>
 
     <script>
-        // JavaScript for Interactive Effects
-
-        // 1. Scroll to Top Functionality
-        const scrollTopButton = document.querySelector('.scroll-top');
-
-        function toggleScrollTopButton() {
-            if (window.scrollY > 300) {
-                scrollTopButton.classList.add('visible');
-            } else {
-                scrollTopButton.classList.remove('visible');
-            }
-        }
-
-        function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
-
-        window.addEventListener('scroll', toggleScrollTopButton);
-
-        // 2. Section Visibility (Scroll Reveal Effect)
-        const sections = document.querySelectorAll('section');
-
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.2 // Trigger when 20% of the section is visible
-        };
-
-        const sectionObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const section = entry.target;
-                    const delay = parseFloat(section.getAttribute('data-animate-delay')) || 0;
-                    setTimeout(() => {
-                        section.classList.add('visible');
-                        // Animate timeline items inside the section
-                        animateTimelineItems(section);
-                    }, delay * 1000);
-                    observer.unobserve(section); // Stop observing once visible
-                }
-            });
-        }, observerOptions);
-
-        sections.forEach(section => {
-            sectionObserver.observe(section);
-        });
-
-        // 3. Timeline Item Animation (Staggered Effect)
-        function animateTimelineItems(section) {
-            const timelineItems = section.querySelectorAll('.timeline-item');
-            timelineItems.forEach((item, index) => {
-                // Apply staggered delay
-                item.style.transitionDelay = `${index * 0.15}s`;
-                item.classList.add('visible');
-            });
-        }
-        
-        // 4. Navigation Active State
+        const contentFrame = document.getElementById('content-frame');
         const navLinks = document.querySelectorAll('nav a');
         
-        function updateActiveNav() {
-            let currentActive = '';
-            sections.forEach(section => {
-                const rect = section.getBoundingClientRect();
-                // If the top of the section is within 150px from the top of the viewport
-                if (rect.top <= 150 && rect.bottom >= 150) {
-                    currentActive = section.getAttribute('id');
-                }
+        // 1. Chức năng Load Nội dung và Hiệu ứng Chuyển Trang
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const pageUrl = this.getAttribute('href');
+
+                // Hiệu ứng Fade Out trước khi tải nội dung mới
+                contentFrame.style.opacity = '0';
+
+                // Cập nhật trạng thái active của Nav
+                navLinks.forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Tải nội dung mới sau một khoảng thời gian ngắn
+                setTimeout(() => {
+                    contentFrame.src = pageUrl;
+                }, 300); // Đợi 300ms cho hiệu ứng fade out
             });
+        });
+
+        // 2. Tùy chỉnh chiều cao Iframe để nội dung không bị cắt
+        contentFrame.onload = function() {
+            // Đảm bảo nội dung đã load xong
+            const frameDoc = contentFrame.contentDocument || contentFrame.contentWindow.document;
+            const contentHeight = frameDoc.body.scrollHeight;
             
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === `#${currentActive}`) {
-                    link.classList.add('active');
-                }
-            });
-        }
-        
-        window.addEventListener('scroll', updateActiveNav);
-        document.addEventListener('DOMContentLoaded', updateActiveNav); // Check on load
-        
+            // Thiết lập chiều cao cho iframe
+            contentFrame.style.height = (contentHeight + 50) + 'px'; // +50px để có khoảng trống
+            
+            // Hiệu ứng Fade In sau khi tải xong
+            contentFrame.style.opacity = '1';
+        };
+
+        // 3. Khởi tạo trạng thái active và tải trang ban đầu
+        document.addEventListener('DOMContentLoaded', () => {
+            // Lấy trang mặc định (gioithieu.html)
+            const defaultPage = 'gioithieu.html';
+            const initialLink = document.querySelector(`a[href="${defaultPage}"]`);
+            if (initialLink) {
+                initialLink.classList.add('active');
+            }
+            contentFrame.src = defaultPage;
+        });
+
     </script>
 </body>
 </html>
